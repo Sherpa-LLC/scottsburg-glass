@@ -25,6 +25,22 @@ export async function getStaticPaths() {
 const { area } = Astro.props;
 const areaSlug = slugify(area);
 const isPrimary = config.serviceAreas.primary.includes(area);
+
+const locationImages: Record<string, string> = {
+  scottsburg: '/images/regions-bank-hero.jpg',
+  seymour: '/images/bank-storefront.jpg',
+  columbus: '/images/glass-walls-office.jpeg',
+  madison: '/images/historical-building-windows.jpg',
+  salem: '/images/storefront-door-windows.jpeg',
+  charlestown: '/images/town-hall.jpg',
+  'new-albany': '/images/curtain-wall-install.jpeg',
+  jeffersonville: '/images/popeyes-storefront.jpeg',
+  sellersburg: '/images/new-construction-glass-install.jpeg',
+  paoli: '/images/historical-windows-project.jpg',
+  austin: '/images/house-window-replacement.jpg',
+  crothersville: '/images/school-glass.jpeg',
+};
+const heroImage = locationImages[areaSlug] || '/images/regions-bank-hero.jpg';
 ---
 
 <BaseLayout
@@ -38,12 +54,17 @@ const isPrimary = config.serviceAreas.primary.includes(area);
   ]}
 >
   <!-- HERO -->
-  <section class="relative py-28 lg:py-36 overflow-hidden" style={`background: var(--color-secondary);`}>
+  <section class="relative py-28 lg:py-36 overflow-hidden" style="background: var(--color-secondary);">
+    <div class="absolute inset-0">
+      <img src={heroImage} alt={`${business.name} glass services in ${area}`} class="w-full h-full object-cover" width="1920" height="1080" fetchpriority="high" />
+      <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(10,22,40,0.82) 0%, rgba(10,22,40,0.78) 100%);"></div>
+    </div>
     <div class="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
       <p class="section-label mb-4">Serving {area}</p>
-      <h1 class="text-4xl sm:text-5xl font-bold mb-6" style="font-family: var(--font-family-display); color: var(--color-text-on-dark);">
+      <h1 class="text-4xl sm:text-5xl font-bold mb-4" style="font-family: var(--font-family-display); color: var(--color-text-on-dark);">
         {business.name} in {area}, {contact.address.state}
       </h1>
+      <div class="prism-line w-20 mx-auto mb-6 rounded-full"></div>
       <p class="text-lg max-w-2xl mx-auto mb-8" style="color: var(--color-text-on-dark-muted);">
         Trusted {business.tagline.toLowerCase()} serving {area} and the surrounding {contact.address.state} communities. Locally owned, fully licensed, and committed to quality.
       </p>
@@ -86,22 +107,24 @@ const isPrimary = config.serviceAreas.primary.includes(area);
       <h2 class="text-3xl sm:text-4xl font-bold mb-4 reveal" style="font-family: var(--font-family-display);">
         Services Available in {area}
       </h2>
+      <div class="prism-line-thin w-12 mb-6 reveal"></div>
       <p class="text-lg mb-12 max-w-2xl reveal" style="color: var(--color-text-muted);">
         We offer our full range of services to {area} homeowners and businesses.
       </p>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {services.map((svc, i) => (
           <a
             href={`/services/${svc.data.slug}`}
-            class="group p-6 rounded-lg transition-all duration-300 reveal"
-            style={`background: var(--color-surface); box-shadow: var(--shadow-card); transition-delay: ${i * 100}ms;`}
+            class="group p-6 rounded-xl transition-all duration-300 reveal glass-shimmer"
+            style={`background: var(--color-surface); border: 1px solid var(--color-border); transition-delay: ${i * 100}ms;`}
           >
             <h3 class="text-xl font-bold mb-2 group-hover:text-[var(--color-primary)] transition-colors" style="font-family: var(--font-family-display);">
               {svc.data.title}
             </h3>
             <p class="text-sm mb-4" style="color: var(--color-text-muted);">{svc.data.shortDescription}</p>
-            <span class="text-sm font-semibold" style="color: var(--color-primary);">
-              Learn More &rarr;
+            <span class="inline-flex items-center gap-1 text-sm font-semibold group-hover:gap-2 transition-all" style="color: var(--color-primary);">
+              Learn More
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
             </span>
           </a>
         ))}
@@ -112,31 +135,37 @@ const isPrimary = config.serviceAreas.primary.includes(area);
   <!-- WHY CHOOSE US FOR THIS AREA -->
   <section class="py-16 lg:py-24" style="background: var(--color-bg);">
     <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-bold mb-8 reveal" style="font-family: var(--font-family-display);">
+      <h2 class="text-3xl font-bold mb-4 reveal" style="font-family: var(--font-family-display);">
         Why {area} Chooses {business.name}
       </h2>
+      <div class="prism-line-thin w-12 mb-8 reveal"></div>
       <div class="space-y-6 reveal">
-        <div class="flex gap-4">
-          <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background: var(--color-primary);">1</div>
-          <div>
-            <h3 class="font-bold text-lg mb-1">Local Knowledge</h3>
-            <p class="text-sm" style="color: var(--color-text-muted);">We know {area} and {contact.address.state} inside and out — local regulations, climate considerations, and what works best in this area.</p>
+        {[
+          {
+            title: 'Local Knowledge',
+            desc: `We know ${area} and ${contact.address.state} inside and out -- local regulations, climate considerations, and what works best in this area.`,
+          },
+          {
+            title: 'Fast Response Times',
+            desc: isPrimary
+              ? `Based nearby, we can reach ${area} quickly. As a primary service area, you get priority scheduling.`
+              : `Based nearby, we can reach ${area} quickly. We serve your area regularly and can accommodate your schedule.`,
+          },
+          {
+            title: 'Trusted by Your Neighbors',
+            desc: `We've built our reputation one job at a time across ${contact.address.state}. Ask around -- chances are someone in ${area} has worked with us.`,
+          },
+        ].map((item, i) => (
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);">
+              {i + 1}
+            </div>
+            <div>
+              <h3 class="font-bold text-lg mb-1">{item.title}</h3>
+              <p class="text-sm" style="color: var(--color-text-muted);">{item.desc}</p>
+            </div>
           </div>
-        </div>
-        <div class="flex gap-4">
-          <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background: var(--color-primary);">2</div>
-          <div>
-            <h3 class="font-bold text-lg mb-1">Fast Response Times</h3>
-            <p class="text-sm" style="color: var(--color-text-muted);">Based nearby, we can reach {area} quickly. {isPrimary ? 'As a primary service area, you get priority scheduling.' : 'We serve your area regularly and can accommodate your schedule.'}</p>
-          </div>
-        </div>
-        <div class="flex gap-4">
-          <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background: var(--color-primary);">3</div>
-          <div>
-            <h3 class="font-bold text-lg mb-1">Trusted by Your Neighbors</h3>
-            <p class="text-sm" style="color: var(--color-text-muted);">We've built our reputation one job at a time across {contact.address.state}. Ask around — chances are someone in {area} has worked with us.</p>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   </section>
@@ -144,15 +173,16 @@ const isPrimary = config.serviceAreas.primary.includes(area);
   <!-- OTHER LOCATIONS -->
   <section class="py-16 lg:py-24" style="background: var(--color-bg-alt);">
     <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
-      <p class="section-label mb-3">Service Areas</p>
-      <h2 class="text-2xl font-bold mb-8" style="font-family: var(--font-family-display);">
+      <p class="section-label mb-3 reveal">Service Areas</p>
+      <h2 class="text-2xl font-bold mb-4 reveal" style="font-family: var(--font-family-display);">
         We Also Serve
       </h2>
-      <div class="flex flex-wrap justify-center gap-3">
+      <div class="prism-line-thin w-12 mx-auto mb-8 reveal"></div>
+      <div class="flex flex-wrap justify-center gap-3 reveal">
         {allAreas.filter(a => a !== area).map((a) => (
           <a
             href={`/locations/${slugify(a)}`}
-            class="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200"
+            class="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 hover:border-[var(--color-primary)] hover:text-[var(--color-primary)]"
             style="background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-text-light);"
           >
             {a}
@@ -163,11 +193,13 @@ const isPrimary = config.serviceAreas.primary.includes(area);
   </section>
 
   <!-- CTA -->
-  <section class="py-16 text-center" style={`background: var(--color-dark);`}>
-    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+  <section class="py-16 text-center relative overflow-hidden" style="background: linear-gradient(135deg, var(--color-dark) 0%, #0c2d4a 50%, #0e3a5c 100%);">
+    <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at 70% 30%, rgba(8,145,178,0.12) 0%, transparent 50%);"></div>
+    <div class="relative z-10 mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
       <h2 class="text-3xl font-bold mb-4" style="font-family: var(--font-family-display); color: var(--color-text-on-dark);">
         Ready for Service in {area}?
       </h2>
+      <div class="prism-line w-16 mx-auto mb-6 rounded-full"></div>
       <p class="mb-8" style="color: var(--color-text-on-dark-muted);">
         Get in touch today for a free consultation. We're here to help.
       </p>

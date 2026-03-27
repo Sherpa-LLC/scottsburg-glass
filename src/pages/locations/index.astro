@@ -15,12 +15,17 @@ function slugify(str: string): string {
   breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Locations', url: '/locations' }]}
 >
   <!-- HERO -->
-  <section class="py-20 lg:py-28" style={`background: var(--color-secondary);`}>
-    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+  <section class="relative py-20 lg:py-28 overflow-hidden" style="background: var(--color-secondary);">
+    <div class="absolute inset-0">
+      <img src="/images/town-hall.jpg" alt="Scottsburg Glass serving Southern Indiana communities" class="w-full h-full object-cover" width="1920" height="1080" fetchpriority="high" />
+      <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(10,22,40,0.82) 0%, rgba(10,22,40,0.78) 100%);"></div>
+    </div>
+    <div class="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
       <p class="section-label mb-4">Service Areas</p>
       <h1 class="text-4xl sm:text-5xl font-bold mb-6" style="font-family: var(--font-family-display); color: var(--color-text-on-dark);">
         Areas We Serve
       </h1>
+      <div class="prism-line w-20 mx-auto mb-6 rounded-full"></div>
       <p class="text-lg" style="color: var(--color-text-on-dark-muted);">
         {business.name} proudly serves {contact.address.city} and the surrounding {contact.address.state} communities.
       </p>
@@ -30,21 +35,29 @@ function slugify(str: string): string {
   <!-- PRIMARY AREAS -->
   <section class="py-16 lg:py-24" style="background: var(--color-bg);">
     <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-      <p class="section-label mb-3">Primary Service Areas</p>
-      <h2 class="text-3xl font-bold mb-8" style="font-family: var(--font-family-display);">
+      <p class="section-label mb-3 reveal">Primary Service Areas</p>
+      <h2 class="text-3xl font-bold mb-4 reveal" style="font-family: var(--font-family-display);">
         Our Home Turf
       </h2>
+      <div class="prism-line-thin w-12 mb-8 reveal"></div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {config.serviceAreas.primary.map((area) => (
+        {config.serviceAreas.primary.map((area, i) => (
           <a
             href={`/locations/${slugify(area)}`}
-            class="group p-6 rounded-lg transition-all duration-200"
-            style="background: var(--color-surface); box-shadow: var(--shadow-card);"
+            class="group p-6 rounded-xl transition-all duration-200 reveal"
+            style={`background: var(--color-surface); border: 1px solid var(--color-border); transition-delay: ${i * 80}ms;`}
           >
-            <h3 class="text-lg font-bold group-hover:text-[var(--color-primary)] transition-colors">
-              {area}, {contact.address.state}
-            </h3>
-            <p class="text-sm mt-1" style="color: var(--color-text-muted);">
+            <div class="flex items-center gap-3 mb-2">
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: var(--color-primary-light);">
+                <svg class="w-4 h-4" style="color: var(--color-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-bold group-hover:text-[var(--color-primary)] transition-colors">
+                {area}, {contact.address.state}
+              </h3>
+            </div>
+            <p class="text-sm" style="color: var(--color-text-muted);">
               Priority scheduling &middot; Fast response
             </p>
           </a>
@@ -57,21 +70,29 @@ function slugify(str: string): string {
   {config.serviceAreas.secondary.length > 0 && (
     <section class="py-16 lg:py-24" style="background: var(--color-bg-alt);">
       <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <p class="section-label mb-3">Extended Service Areas</p>
-        <h2 class="text-3xl font-bold mb-8" style="font-family: var(--font-family-display);">
+        <p class="section-label mb-3 reveal">Extended Service Areas</p>
+        <h2 class="text-3xl font-bold mb-4 reveal" style="font-family: var(--font-family-display);">
           We Also Serve
         </h2>
+        <div class="prism-line-thin w-12 mb-8 reveal"></div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {config.serviceAreas.secondary.map((area) => (
+          {config.serviceAreas.secondary.map((area, i) => (
             <a
               href={`/locations/${slugify(area)}`}
-              class="group p-6 rounded-lg transition-all duration-200"
-              style="background: var(--color-surface); box-shadow: var(--shadow-card);"
+              class="group p-6 rounded-xl transition-all duration-200 reveal"
+              style={`background: var(--color-surface); border: 1px solid var(--color-border); transition-delay: ${i * 60}ms;`}
             >
-              <h3 class="text-lg font-bold group-hover:text-[var(--color-primary)] transition-colors">
-                {area}, {contact.address.state}
-              </h3>
-              <p class="text-sm mt-1" style="color: var(--color-text-muted);">
+              <div class="flex items-center gap-3 mb-2">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: var(--color-bg-alt);">
+                  <svg class="w-4 h-4" style="color: var(--color-text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  </svg>
+                </div>
+                <h3 class="text-lg font-bold group-hover:text-[var(--color-primary)] transition-colors">
+                  {area}, {contact.address.state}
+                </h3>
+              </div>
+              <p class="text-sm" style="color: var(--color-text-muted);">
                 Full service available
               </p>
             </a>
@@ -82,11 +103,13 @@ function slugify(str: string): string {
   )}
 
   <!-- CTA -->
-  <section class="py-16 text-center" style={`background: var(--color-dark);`}>
-    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+  <section class="py-16 text-center relative overflow-hidden" style="background: linear-gradient(135deg, var(--color-dark) 0%, #0c2d4a 50%, #0e3a5c 100%);">
+    <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at 70% 30%, rgba(8,145,178,0.12) 0%, transparent 50%);"></div>
+    <div class="relative z-10 mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
       <h2 class="text-3xl font-bold mb-4" style="font-family: var(--font-family-display); color: var(--color-text-on-dark);">
         Don't See Your Area?
       </h2>
+      <div class="prism-line w-16 mx-auto mb-6 rounded-full"></div>
       <p class="mb-8" style="color: var(--color-text-on-dark-muted);">
         Give us a call — we may still be able to help. We're always expanding our coverage.
       </p>

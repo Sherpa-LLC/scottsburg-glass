@@ -15,12 +15,17 @@ const posts = allPosts
   breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Blog', url: '/blog' }]}
 >
   <!-- HERO -->
-  <section class="py-20 lg:py-28" style={`background: var(--color-secondary);`}>
-    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+  <section class="relative py-20 lg:py-28 overflow-hidden" style="background: var(--color-secondary);">
+    <div class="absolute inset-0">
+      <img src="/images/historical-windows-project.jpg" alt="Glass installation expertise" class="w-full h-full object-cover" width="1920" height="1080" fetchpriority="high" />
+      <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(10,22,40,0.82) 0%, rgba(10,22,40,0.78) 100%);"></div>
+    </div>
+    <div class="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
       <p class="section-label mb-4">Blog</p>
       <h1 class="text-4xl sm:text-5xl font-bold mb-6" style="font-family: var(--font-family-display); color: var(--color-text-on-dark);">
         Tips & Insights
       </h1>
+      <div class="prism-line w-20 mx-auto mb-6 rounded-full"></div>
       <p class="text-lg" style="color: var(--color-text-on-dark-muted);">
         Expert advice and local knowledge from the {config.business.name} team.
       </p>
@@ -35,7 +40,7 @@ const posts = allPosts
           Check back soon for new posts!
         </p>
       ) : (
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {posts.map((post, i) => {
             const formattedDate = new Date(post.data.date).toLocaleDateString('en-US', {
               year: 'numeric', month: 'long', day: 'numeric',
@@ -43,11 +48,11 @@ const posts = allPosts
             return (
               <a
                 href={`/blog/${post.id}`}
-                class="group rounded-lg overflow-hidden transition-shadow duration-300 reveal"
-                style={`background: var(--color-surface); box-shadow: var(--shadow-card); transition-delay: ${i * 100}ms;`}
+                class="group rounded-xl overflow-hidden transition-all duration-300 reveal glass-shimmer"
+                style={`background: var(--color-surface); border: 1px solid var(--color-border); transition-delay: ${i * 100}ms;`}
               >
                 {post.data.heroImage && (
-                  <div class="aspect-[16/10] overflow-hidden">
+                  <div class="aspect-[16/10] overflow-hidden relative">
                     <img
                       src={post.data.heroImage}
                       alt={post.data.heroAlt || post.data.title}
@@ -56,11 +61,12 @@ const posts = allPosts
                       height="375"
                       loading="lazy"
                     />
+                    <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style="background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%);"></div>
                   </div>
                 )}
                 <div class="p-6">
                   {post.data.category && (
-                    <span class="inline-block px-2 py-1 text-xs font-semibold rounded mb-3" style="background: var(--color-primary); color: white;">
+                    <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full mb-3" style="background: var(--color-primary-light); color: var(--color-primary);">
                       {post.data.category}
                     </span>
                   )}
@@ -72,7 +78,7 @@ const posts = allPosts
                     <span>{formattedDate}</span>
                     {post.data.readingTime && (
                       <>
-                        <span>&middot;</span>
+                        <span class="prism-line-thin w-3 inline-block align-middle" style="height: 1px;"></span>
                         <span>{post.data.readingTime}</span>
                       </>
                     )}

@@ -5,9 +5,9 @@ const year = new Date().getFullYear();
 const allAreas = [...config.serviceAreas.primary, ...config.serviceAreas.secondary];
 ---
 
-<footer class="pb-24 lg:pb-0" style={`background-color: var(--color-dark); color: var(--color-text-on-dark-muted);`}>
-  <!-- Accent line -->
-  <div class="h-[2px]" style={`background: linear-gradient(to right, transparent, var(--color-accent), transparent);`}></div>
+<footer class="pb-24 lg:pb-0" style="background-color: var(--color-dark); color: var(--color-text-on-dark-muted);">
+  <!-- Prism accent line -->
+  <div class="prism-line"></div>
 
   <div class="mx-auto max-w-7xl px-5 lg:px-8 pt-16 pb-12">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
@@ -26,6 +26,13 @@ const allAreas = [...config.serviceAreas.primary, ...config.serviceAreas.seconda
         <p class="text-sm max-w-xs" style="color: var(--color-text-on-dark-muted);">
           {config.business.tagline}
         </p>
+        <!-- WBE Badge -->
+        <div class="mt-4">
+          <span class="wbe-badge">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+            WBE Certified
+          </span>
+        </div>
         {config.schema.sameAs.length > 0 && (
           <div class="flex gap-4 mt-6">
             {config.schema.sameAs.map((url) => {
@@ -35,8 +42,8 @@ const allAreas = [...config.serviceAreas.primary, ...config.serviceAreas.seconda
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200"
-                  style="border: 1px solid var(--color-border-dark); color: var(--color-text-on-dark-muted);"
+                  class="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 hover:bg-white/10"
+                  style="border: 1px solid rgba(255,255,255,0.15); color: var(--color-text-on-dark-muted);"
                   aria-label={isFacebook ? 'Facebook' : 'Instagram'}
                 >
                   {isFacebook ? (
@@ -57,14 +64,14 @@ const allAreas = [...config.serviceAreas.primary, ...config.serviceAreas.seconda
 
       <!-- Contact Column -->
       <div>
-        <h3 class="text-[13px] font-bold uppercase tracking-[0.08em] mb-6" style="color: var(--color-text-on-dark);">
+        <h3 class="text-[13px] font-bold uppercase tracking-[0.08em] mb-6 text-white">
           Contact
         </h3>
         <div class="space-y-4 text-sm">
           <a
             href={`tel:${config.contact.phoneRaw}`}
             class="block font-bold text-lg transition-colors"
-            style="color: var(--color-primary);"
+            style="color: var(--color-accent);"
           >
             {config.contact.phone}
           </a>
@@ -83,7 +90,7 @@ const allAreas = [...config.serviceAreas.primary, ...config.serviceAreas.seconda
 
       <!-- Hours Column -->
       <div>
-        <h3 class="text-[13px] font-bold uppercase tracking-[0.08em] mb-6" style="color: var(--color-text-on-dark);">
+        <h3 class="text-[13px] font-bold uppercase tracking-[0.08em] mb-6 text-white">
           Hours
         </h3>
         <dl class="space-y-2 text-sm">
@@ -98,7 +105,7 @@ const allAreas = [...config.serviceAreas.primary, ...config.serviceAreas.seconda
 
       <!-- Service Areas Column -->
       <div>
-        <h3 class="text-[13px] font-bold uppercase tracking-[0.08em] mb-6" style="color: var(--color-text-on-dark);">
+        <h3 class="text-[13px] font-bold uppercase tracking-[0.08em] mb-6 text-white">
           Service Areas
         </h3>
         <p class="text-sm flex flex-wrap gap-x-1.5 gap-y-0.5" style="color: var(--color-text-on-dark-muted);">
@@ -109,7 +116,7 @@ const allAreas = [...config.serviceAreas.primary, ...config.serviceAreas.seconda
           ))}
         </p>
 
-        <h3 class="text-[13px] font-bold uppercase tracking-[0.08em] mt-8 mb-4" style="color: var(--color-text-on-dark);">
+        <h3 class="text-[13px] font-bold uppercase tracking-[0.08em] mt-8 mb-4 text-white">
           Services
         </h3>
         <ul class="space-y-2 text-sm">
@@ -128,13 +135,13 @@ const allAreas = [...config.serviceAreas.primary, ...config.serviceAreas.seconda
     </div>
 
     <!-- Bottom Bar -->
-    <div class="mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4" style="border-top: 1px solid var(--color-border-dark);">
+    <div class="mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4" style="border-top: 1px solid rgba(255, 255, 255, 0.08);">
       <p class="text-[13px]" style="color: var(--color-text-on-dark-muted);">
         &copy; {year} {config.business.name}. All rights reserved.
       </p>
-      <div class="flex items-center gap-2 text-[13px]" style="color: var(--color-text-on-dark-muted);">
+      <div class="flex items-center gap-3 text-[13px]" style="color: var(--color-text-on-dark-muted);">
         <a href="/privacy" class="hover:text-white transition-colors">Privacy Policy</a>
-        <span style="color: var(--color-accent);">|</span>
+        <span class="prism-line-thin w-4 inline-block align-middle" style="height: 1px;"></span>
         <a href="/terms" class="hover:text-white transition-colors">Terms of Service</a>
       </div>
     </div>

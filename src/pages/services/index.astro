@@ -1,0 +1,95 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { config } from '../../config';
+import { getCollection } from 'astro:content';
+
+const { business, contact, cta } = config;
+
+const allServices = await getCollection('services');
+const services = allServices.sort((a, b) => a.data.order - b.data.order);
+
+const serviceImages = [
+  '/images/window-replacement.jpg',
+  '/images/door-replacement.jpg',
+  '/images/new-construction.jpg',
+  '/images/bank-storefront.jpg',
+  '/images/gym-mirrors.jpeg',
+];
+---
+
+<BaseLayout
+  title="Our Services"
+  description={`${business.name} provides expert glass services including window replacement, door installation, storefront glass, new construction, and custom mirrors throughout Southern Indiana.`}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Services', url: '/services' }]}
+>
+  <!-- HERO -->
+  <section class="relative py-20 lg:py-28 overflow-hidden" style="background: var(--color-secondary);">
+    <div class="absolute inset-0">
+      <img src="/images/glass-walls-office.jpeg" alt="Commercial glass installation by Scottsburg Glass" class="w-full h-full object-cover" width="1920" height="1080" fetchpriority="high" />
+      <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(10,22,40,0.82) 0%, rgba(10,22,40,0.78) 100%);"></div>
+    </div>
+    <div class="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+      <p class="section-label mb-4">What We Do</p>
+      <h1 class="text-4xl sm:text-5xl font-bold mb-6" style="font-family: var(--font-family-display); color: var(--color-text-on-dark);">
+        Our Services
+      </h1>
+      <div class="prism-line w-20 mx-auto mb-6 rounded-full"></div>
+      <p class="text-lg max-w-2xl mx-auto" style="color: var(--color-text-on-dark-muted);">
+        From residential windows to commercial storefronts, {business.name} delivers precision glass solutions with over 40 years of expertise.
+      </p>
+    </div>
+  </section>
+
+  <!-- SERVICES GRID -->
+  <section class="py-16 lg:py-24" style="background: var(--color-bg);">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {services.map((svc, i) => (
+          <a
+            href={`/services/${svc.data.slug}`}
+            class="group rounded-xl overflow-hidden transition-all duration-300 reveal glass-shimmer"
+            style={`background: var(--color-surface); border: 1px solid var(--color-border); transition-delay: ${i * 100}ms;`}
+          >
+            <div class="aspect-[16/10] overflow-hidden relative">
+              <img
+                src={serviceImages[i] || svc.data.heroImage}
+                alt={svc.data.heroAlt}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                width="600"
+                height="375"
+                loading="lazy"
+              />
+              <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style="background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%);"></div>
+            </div>
+            <div class="p-6">
+              <h2 class="text-xl font-bold mb-2 group-hover:text-[var(--color-primary)] transition-colors" style="font-family: var(--font-family-display);">{svc.data.title}</h2>
+              <p class="text-sm mb-4" style="color: var(--color-text-muted);">{svc.data.shortDescription}</p>
+              <span class="inline-flex items-center gap-1 text-sm font-semibold group-hover:gap-2 transition-all" style="color: var(--color-primary);">
+                Learn More
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 text-center relative overflow-hidden" style="background: linear-gradient(135deg, var(--color-dark) 0%, #0c2d4a 50%, #0e3a5c 100%);">
+    <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at 70% 30%, rgba(8,145,178,0.12) 0%, transparent 50%);"></div>
+    <div class="relative z-10 mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold mb-4" style="font-family: var(--font-family-display); color: var(--color-text-on-dark);">
+        Need a Custom Glass Solution?
+      </h2>
+      <div class="prism-line w-16 mx-auto mb-6 rounded-full"></div>
+      <p class="mb-8" style="color: var(--color-text-on-dark-muted);">
+        Contact us today for a free consultation and estimate on your project.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={cta.primary.href} class="btn-primary">{cta.primary.label}</a>
+        <a href={`tel:${contact.phoneRaw}`} class="btn-ghost">{cta.phone.label}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

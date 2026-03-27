@@ -32,82 +32,150 @@ const {
 
 const allServices = await getCollection('services');
 const services = allServices.sort((a, b) => a.data.order - b.data.order);
+
+const serviceImages = [
+  '/images/window-replacement.jpg',
+  '/images/door-replacement.jpg',
+  '/images/new-construction.jpg',
+  '/images/bank-storefront.jpg',
+  '/images/gym-mirrors.jpeg',
+];
 ---
 
 <BaseLayout title={business.name} description={business.description}>
-  <!-- HERO -->
-  <section class="relative overflow-hidden" style={`background: var(--color-secondary); min-height: 90dvh;`}>
+  <!-- ═══════════════════ HERO — Frosted Glass Panel ═══════════════════ -->
+  <section class="relative overflow-hidden" style="min-height: 92dvh; background: var(--color-secondary);">
     {heroImage && (
       <div class="absolute inset-0">
         <img
           src={heroImage}
           alt={heroAlt || heroHeadline}
-          class="w-full h-full object-cover opacity-30"
+          class="w-full h-full object-cover"
           width="1920"
           height="1080"
           fetchpriority="high"
           decoding="async"
         />
+        <!-- Strong contrast overlay for readability -->
+        <div class="absolute inset-0" style="background: linear-gradient(135deg, rgba(10,22,40,0.82) 0%, rgba(10,22,40,0.68) 40%, rgba(10,22,40,0.78) 100%);"></div>
       </div>
     )}
-    <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center" style="min-height: 90dvh;">
-      <div class="max-w-2xl">
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6" style="font-family: var(--font-family-display); color: var(--color-text-on-dark); line-height: 1.08;">
-          {heroHeadline}
-          {heroAccent && (
-            <span class="block" style={`color: var(--color-primary);`}>{heroAccent}</span>
-          )}
-        </h1>
-        <p class="text-lg sm:text-xl mb-8 max-w-xl" style="color: var(--color-text-on-dark-muted);">
-          {heroSubtext}
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4">
-          <a href={cta.primary.href} class="btn-primary">{ctaPrimary || cta.primary.label}</a>
-          {ctaSecondary && (
-            <a href="/services" class="btn-ghost">{ctaSecondary}</a>
-          )}
+
+    <!-- Subtle prism refraction effect -->
+    <div class="absolute top-0 right-0 w-1/3 h-full pointer-events-none" style="background: linear-gradient(160deg, transparent 30%, rgba(96,165,250,0.06) 50%, rgba(167,139,250,0.04) 70%, transparent 90%);"></div>
+
+    <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center" style="min-height: 92dvh;">
+      <div class="w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <!-- Text content -->
+        <div class="max-w-xl">
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6" style="font-family: var(--font-family-display); color: var(--color-text-on-dark); line-height: 1.08;">
+            {heroHeadline}
+            {heroAccent && (
+              <span class="block" style="color: var(--color-accent);">{heroAccent}</span>
+            )}
+          </h1>
+          <!-- Prism accent line -->
+          <div class="prism-line w-24 mb-6 rounded-full"></div>
+          <p class="text-lg sm:text-xl mb-8 max-w-xl" style="color: var(--color-text-on-dark-muted);">
+            {heroSubtext}
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href={cta.primary.href} class="btn-primary">{ctaPrimary || cta.primary.label}</a>
+            {ctaSecondary && (
+              <a href="/services" class="btn-ghost">{ctaSecondary}</a>
+            )}
+          </div>
         </div>
-        {trustItems && trustItems.length > 0 && (
-          <div class="mt-10 flex flex-wrap gap-6 text-sm" style="color: var(--color-text-on-dark-muted);">
+
+        <!-- Frosted glass info panel -->
+        <div class="hidden lg:block">
+          <div class="frosted-panel p-8">
+            {trustItems && trustItems.length > 0 && (
+              <div class="space-y-4">
+                {trustItems.map((item: any, i: number) => (
+                  <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: rgba(8, 145, 178, 0.2);">
+                      <svg class="w-4 h-4" style="color: var(--color-accent);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <span class="text-white font-medium">{item.label}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+            <div class="mt-6 pt-6" style="border-top: 1px solid rgba(255,255,255,0.12);">
+              <div class="flex items-center gap-3">
+                <div class="flex -space-x-1">
+                  <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background: var(--color-accent);">5.0</div>
+                </div>
+                <div>
+                  <div class="flex gap-0.5">
+                    {[1,2,3,4,5].map(() => (
+                      <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+                  <p class="text-xs mt-0.5" style="color: rgba(255,255,255,0.5);">Rated 5.0 from {config.schema.aggregateRating.count} reviews</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile trust items -->
+      {trustItems && trustItems.length > 0 && (
+        <div class="lg:hidden absolute bottom-8 left-4 right-4">
+          <div class="flex flex-wrap gap-4 text-sm" style="color: var(--color-text-on-dark-muted);">
             {trustItems.map((item: any) => (
               <span class="flex items-center gap-2">
-                <span style={`color: var(--color-primary);`}>&#10003;</span>
+                <span style="color: var(--color-accent);">&#10003;</span>
                 {item.label}
               </span>
             ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   </section>
 
-  <!-- SERVICES -->
+  <!-- ═══════════════════ SERVICES — Glass Card Design ═══════════════════ -->
   <section class="py-20 lg:py-28" style="background: var(--color-bg);">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       {servicesSubheading && <p class="section-label mb-3 reveal">{servicesSubheading}</p>}
-      <h2 class="text-3xl sm:text-4xl font-bold mb-12 reveal" style="font-family: var(--font-family-display);">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-4 reveal" style="font-family: var(--font-family-display);">
         {servicesHeading || 'Our Services'}
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="prism-line-thin w-16 mb-12 reveal"></div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {services.map((svc, i) => (
           <a
             href={`/services/${svc.data.slug}`}
-            class="group rounded-lg overflow-hidden transition-shadow duration-300 reveal"
-            style={`background: var(--color-surface); box-shadow: var(--shadow-card); transition-delay: ${i * 100}ms;`}
+            class="group rounded-xl overflow-hidden transition-all duration-300 reveal glass-shimmer"
+            style={`background: var(--color-surface); border: 1px solid var(--color-border); transition-delay: ${i * 100}ms;`}
           >
-            <div class="aspect-[16/10] overflow-hidden">
+            <div class="aspect-[16/10] overflow-hidden relative">
               <img
-                src={svc.data.heroImage}
+                src={serviceImages[i] || svc.data.heroImage}
                 alt={svc.data.heroAlt}
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 width="600"
                 height="375"
                 loading="lazy"
               />
+              <!-- Glass shine overlay on image -->
+              <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" style="background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%);"></div>
             </div>
             <div class="p-6">
-              <h3 class="text-xl font-bold mb-2" style="font-family: var(--font-family-display);">{svc.data.title}</h3>
+              <h3 class="text-xl font-bold mb-2 group-hover:text-[var(--color-primary)] transition-colors" style="font-family: var(--font-family-display);">{svc.data.title}</h3>
               <p class="text-sm" style="color: var(--color-text-muted);">{svc.data.shortDescription}</p>
+              <span class="inline-flex items-center gap-1 text-sm font-semibold mt-4 group-hover:gap-2 transition-all" style="color: var(--color-primary);">
+                Learn More
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+              </span>
             </div>
           </a>
         ))}
@@ -115,19 +183,68 @@ const services = allServices.sort((a, b) => a.data.order - b.data.order);
     </div>
   </section>
 
-  <!-- WHY US -->
+  <!-- ═══════════════════ WHY US — WBE Badge + Glass Separators ═══════════════════ -->
   {whyUs && whyUs.length > 0 && (
-    <section class="py-20 lg:py-28" style="background: var(--color-bg-alt);">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {whySubheading && <p class="section-label mb-3 reveal">{whySubheading}</p>}
-        <h2 class="text-3xl sm:text-4xl font-bold mb-12 reveal" style="font-family: var(--font-family-display);">
-          {whyHeading || `Why ${business.name}?`}
-        </h2>
+    <section class="py-20 lg:py-28 relative overflow-hidden" style="background: var(--color-bg-alt);">
+      <!-- Subtle refraction background -->
+      <div class="absolute top-0 left-0 w-full h-full pointer-events-none" style="background: radial-gradient(ellipse at 20% 50%, rgba(8,145,178,0.04) 0%, transparent 60%);"></div>
+
+      <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+          {whySubheading && <p class="section-label mb-3 reveal">{whySubheading}</p>}
+          <h2 class="text-3xl sm:text-4xl font-bold mb-4 reveal" style="font-family: var(--font-family-display);">
+            {whyHeading || `Why ${business.name}?`}
+          </h2>
+          <div class="prism-line-thin w-16 mx-auto reveal"></div>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {whyUs.map((item: any, i: number) => (
-            <div class="reveal" style={`transition-delay: ${i * 100}ms;`}>
-              <h3 class="text-lg font-bold mb-2">{item.title}</h3>
-              <p class="text-sm" style="color: var(--color-text-muted);">{item.description}</p>
+          {whyUs.map((item: any, i: number) => {
+            const isWBE = item.title.toLowerCase().includes('women') || item.title.toLowerCase().includes('wbe');
+            return (
+              <div
+                class="p-8 rounded-xl reveal"
+                style={`background: var(--color-surface); border: 1px solid var(--color-border); transition-delay: ${i * 100}ms;`}
+              >
+                {isWBE ? (
+                  <div class="mb-4">
+                    <span class="wbe-badge">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                      WBE Certified
+                    </span>
+                  </div>
+                ) : (
+                  <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-4" style="background: var(--color-primary-light);">
+                    <svg class="w-6 h-6" style="color: var(--color-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      {i === 0 ? (
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      ) : (
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      )}
+                    </svg>
+                  </div>
+                )}
+                <h3 class="text-lg font-bold mb-2">{item.title}</h3>
+                <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">{item.description}</p>
+              </div>
+            );
+          })}
+        </div>
+
+        <!-- Precision Stats with glass-line separators -->
+        <div class="mt-16 grid grid-cols-2 lg:grid-cols-4 gap-0 rounded-xl overflow-hidden reveal" style="border: 1px solid var(--color-border); background: var(--color-surface);">
+          {[
+            { number: '40+', label: 'Years of Experience' },
+            { number: '4,000+', label: 'Windows Installed' },
+            { number: '1,500+', label: 'Doors Completed' },
+            { number: '5.0', label: 'Star Rating' },
+          ].map((stat, i) => (
+            <div
+              class="p-6 lg:p-8 text-center"
+              style={i > 0 ? 'border-left: 1px solid var(--color-border);' : ''}
+            >
+              <div class="text-3xl lg:text-4xl font-bold" style="color: var(--color-primary);">{stat.number}</div>
+              <div class="text-sm mt-1" style="color: var(--color-text-muted);">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -135,22 +252,29 @@ const services = allServices.sort((a, b) => a.data.order - b.data.order);
     </section>
   )}
 
-  <!-- PROCESS -->
+  <!-- ═══════════════════ PROCESS — Window Pane Metaphor ═══════════════════ -->
   {processSteps && processSteps.length > 0 && (
     <section class="py-20 lg:py-28" style="background: var(--color-bg);">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {processSubheading && <p class="section-label mb-3 reveal">{processSubheading}</p>}
-        <h2 class="text-3xl sm:text-4xl font-bold mb-12 reveal" style="font-family: var(--font-family-display);">
-          {processHeading || 'How It Works'}
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="text-center mb-16">
+          {processSubheading && <p class="section-label mb-3 reveal">{processSubheading}</p>}
+          <h2 class="text-3xl sm:text-4xl font-bold mb-4 reveal" style="font-family: var(--font-family-display);">
+            {processHeading || 'How It Works'}
+          </h2>
+          <div class="prism-line-thin w-16 mx-auto reveal"></div>
+        </div>
+
+        <!-- Window pane grid: 2x2 with mullion borders -->
+        <div class="window-pane-grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto reveal">
           {processSteps.map((step: any, i: number) => (
-            <div class="reveal" style={`transition-delay: ${i * 100}ms;`}>
-              <div class="text-4xl font-bold mb-4" style="color: var(--color-primary); opacity: 0.3;">
-                {String(i + 1).padStart(2, '0')}
+            <div class="p-8 lg:p-10">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center text-lg font-bold" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%); color: white;">
+                  {i + 1}
+                </div>
+                <h3 class="text-xl font-bold" style="font-family: var(--font-family-display);">{step.title}</h3>
               </div>
-              <h3 class="text-lg font-bold mb-2">{step.title}</h3>
-              <p class="text-sm" style="color: var(--color-text-muted);">{step.description}</p>
+              <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">{step.description}</p>
             </div>
           ))}
         </div>
@@ -158,20 +282,34 @@ const services = allServices.sort((a, b) => a.data.order - b.data.order);
     </section>
   )}
 
-  <!-- TESTIMONIALS -->
+  <!-- ═══════════════════ TESTIMONIALS — Frosted Glass Cards ═══════════════════ -->
   {config.testimonials.length > 0 && (
-    <section class="py-20 lg:py-28" style="background: var(--color-bg-alt);">
+    <section class="py-20 lg:py-28 relative overflow-hidden" style="background: var(--color-bg-alt);">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {testimonialsSubheading && <p class="section-label mb-3 reveal">{testimonialsSubheading}</p>}
-        <h2 class="text-3xl sm:text-4xl font-bold mb-12 reveal" style="font-family: var(--font-family-display);">
-          {testimonialsHeading || 'What Our Clients Say'}
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="text-center mb-16">
+          {testimonialsSubheading && <p class="section-label mb-3 reveal">{testimonialsSubheading}</p>}
+          <h2 class="text-3xl sm:text-4xl font-bold mb-4 reveal" style="font-family: var(--font-family-display);">
+            {testimonialsHeading || 'What Our Clients Say'}
+          </h2>
+          <div class="prism-line-thin w-16 mx-auto reveal"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {config.testimonials.map((t, i) => (
-            <blockquote class="p-8 rounded-lg reveal" style={`background: var(--color-surface); box-shadow: var(--shadow-card); transition-delay: ${i * 100}ms;`}>
-              <p class="text-base mb-6 italic" style="color: var(--color-text-light);">&ldquo;{t.quote}&rdquo;</p>
+            <blockquote
+              class="p-8 rounded-xl reveal"
+              style={`background: var(--color-surface); border: 1px solid var(--color-border); transition-delay: ${i * 100}ms;`}
+            >
+              <!-- Star rating -->
+              <div class="flex gap-0.5 mb-4">
+                {[1,2,3,4,5].map(() => (
+                  <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                ))}
+              </div>
+              <p class="text-base mb-6 leading-relaxed" style="color: var(--color-text-light);">&ldquo;{t.quote}&rdquo;</p>
               <footer class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm text-white" style="background: var(--color-primary);">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm text-white" style="background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent) 100%);">
                   {t.author.charAt(0)}
                 </div>
                 <div>
@@ -186,15 +324,20 @@ const services = allServices.sort((a, b) => a.data.order - b.data.order);
     </section>
   )}
 
-  <!-- CTA BANNER -->
-  <section class="py-20 text-center" style={`background: var(--color-dark);`}>
-    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl sm:text-4xl font-bold mb-4 reveal" style="font-family: var(--font-family-display); color: var(--color-text-on-dark);">
+  <!-- ═══════════════════ CTA BANNER — Glass/Sky Gradient ═══════════════════ -->
+  <section class="py-20 text-center relative overflow-hidden" style="background: linear-gradient(135deg, var(--color-dark) 0%, #0c2d4a 50%, #0e3a5c 100%);">
+    <!-- Subtle light refraction -->
+    <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at 70% 30%, rgba(8,145,178,0.12) 0%, transparent 50%);"></div>
+    <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse at 30% 80%, rgba(96,165,250,0.06) 0%, transparent 50%);"></div>
+
+    <div class="relative z-10 mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-4 reveal text-balance" style="font-family: var(--font-family-display); color: var(--color-text-on-dark);">
         {ctaBannerHeading || 'Ready to Get Started'}
         {ctaBannerAccent && (
-          <span style={`color: var(--color-primary);`}> {ctaBannerAccent}</span>
+          <span style="color: var(--color-accent);"> {ctaBannerAccent}</span>
         )}
       </h2>
+      <div class="prism-line w-16 mx-auto mb-6 rounded-full reveal"></div>
       <p class="mb-8 reveal" style="color: var(--color-text-on-dark-muted);">
         {ctaBannerText || `Contact ${business.name} today for a free consultation.`}
       </p>
