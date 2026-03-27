@@ -1,0 +1,207 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { config } from '../config';
+import { getEntry, getCollection } from 'astro:content';
+
+const { business, contact, cta } = config;
+
+const homepage = await getEntry('pages', 'homepage');
+const {
+  heroHeadline,
+  heroAccent,
+  heroSubtext,
+  heroImage,
+  heroAlt,
+  ctaPrimary,
+  ctaSecondary,
+  trustItems,
+  servicesHeading,
+  servicesSubheading,
+  whyHeading,
+  whySubheading,
+  whyUs,
+  processHeading,
+  processSubheading,
+  processSteps,
+  testimonialsHeading,
+  testimonialsSubheading,
+  ctaBannerHeading,
+  ctaBannerAccent,
+  ctaBannerText,
+} = homepage.data;
+
+const allServices = await getCollection('services');
+const services = allServices.sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title={business.name} description={business.description}>
+  <!-- HERO -->
+  <section class="relative overflow-hidden" style={`background: var(--color-secondary); min-height: 90dvh;`}>
+    {heroImage && (
+      <div class="absolute inset-0">
+        <img
+          src={heroImage}
+          alt={heroAlt || heroHeadline}
+          class="w-full h-full object-cover opacity-30"
+          width="1920"
+          height="1080"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
+    )}
+    <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center" style="min-height: 90dvh;">
+      <div class="max-w-2xl">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6" style="font-family: var(--font-family-display); color: var(--color-text-on-dark); line-height: 1.08;">
+          {heroHeadline}
+          {heroAccent && (
+            <span class="block" style={`color: var(--color-primary);`}>{heroAccent}</span>
+          )}
+        </h1>
+        <p class="text-lg sm:text-xl mb-8 max-w-xl" style="color: var(--color-text-on-dark-muted);">
+          {heroSubtext}
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href={cta.primary.href} class="btn-primary">{ctaPrimary || cta.primary.label}</a>
+          {ctaSecondary && (
+            <a href="/services" class="btn-ghost">{ctaSecondary}</a>
+          )}
+        </div>
+        {trustItems && trustItems.length > 0 && (
+          <div class="mt-10 flex flex-wrap gap-6 text-sm" style="color: var(--color-text-on-dark-muted);">
+            {trustItems.map((item: any) => (
+              <span class="flex items-center gap-2">
+                <span style={`color: var(--color-primary);`}>&#10003;</span>
+                {item.label}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="py-20 lg:py-28" style="background: var(--color-bg);">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      {servicesSubheading && <p class="section-label mb-3 reveal">{servicesSubheading}</p>}
+      <h2 class="text-3xl sm:text-4xl font-bold mb-12 reveal" style="font-family: var(--font-family-display);">
+        {servicesHeading || 'Our Services'}
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {services.map((svc, i) => (
+          <a
+            href={`/services/${svc.data.slug}`}
+            class="group rounded-lg overflow-hidden transition-shadow duration-300 reveal"
+            style={`background: var(--color-surface); box-shadow: var(--shadow-card); transition-delay: ${i * 100}ms;`}
+          >
+            <div class="aspect-[16/10] overflow-hidden">
+              <img
+                src={svc.data.heroImage}
+                alt={svc.data.heroAlt}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                width="600"
+                height="375"
+                loading="lazy"
+              />
+            </div>
+            <div class="p-6">
+              <h3 class="text-xl font-bold mb-2" style="font-family: var(--font-family-display);">{svc.data.title}</h3>
+              <p class="text-sm" style="color: var(--color-text-muted);">{svc.data.shortDescription}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY US -->
+  {whyUs && whyUs.length > 0 && (
+    <section class="py-20 lg:py-28" style="background: var(--color-bg-alt);">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {whySubheading && <p class="section-label mb-3 reveal">{whySubheading}</p>}
+        <h2 class="text-3xl sm:text-4xl font-bold mb-12 reveal" style="font-family: var(--font-family-display);">
+          {whyHeading || `Why ${business.name}?`}
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {whyUs.map((item: any, i: number) => (
+            <div class="reveal" style={`transition-delay: ${i * 100}ms;`}>
+              <h3 class="text-lg font-bold mb-2">{item.title}</h3>
+              <p class="text-sm" style="color: var(--color-text-muted);">{item.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- PROCESS -->
+  {processSteps && processSteps.length > 0 && (
+    <section class="py-20 lg:py-28" style="background: var(--color-bg);">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {processSubheading && <p class="section-label mb-3 reveal">{processSubheading}</p>}
+        <h2 class="text-3xl sm:text-4xl font-bold mb-12 reveal" style="font-family: var(--font-family-display);">
+          {processHeading || 'How It Works'}
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {processSteps.map((step: any, i: number) => (
+            <div class="reveal" style={`transition-delay: ${i * 100}ms;`}>
+              <div class="text-4xl font-bold mb-4" style="color: var(--color-primary); opacity: 0.3;">
+                {String(i + 1).padStart(2, '0')}
+              </div>
+              <h3 class="text-lg font-bold mb-2">{step.title}</h3>
+              <p class="text-sm" style="color: var(--color-text-muted);">{step.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- TESTIMONIALS -->
+  {config.testimonials.length > 0 && (
+    <section class="py-20 lg:py-28" style="background: var(--color-bg-alt);">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        {testimonialsSubheading && <p class="section-label mb-3 reveal">{testimonialsSubheading}</p>}
+        <h2 class="text-3xl sm:text-4xl font-bold mb-12 reveal" style="font-family: var(--font-family-display);">
+          {testimonialsHeading || 'What Our Clients Say'}
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {config.testimonials.map((t, i) => (
+            <blockquote class="p-8 rounded-lg reveal" style={`background: var(--color-surface); box-shadow: var(--shadow-card); transition-delay: ${i * 100}ms;`}>
+              <p class="text-base mb-6 italic" style="color: var(--color-text-light);">&ldquo;{t.quote}&rdquo;</p>
+              <footer class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm text-white" style="background: var(--color-primary);">
+                  {t.author.charAt(0)}
+                </div>
+                <div>
+                  <cite class="not-italic font-bold text-sm">{t.author}</cite>
+                  <p class="text-xs" style="color: var(--color-text-muted);">{t.location}</p>
+                </div>
+              </footer>
+            </blockquote>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- CTA BANNER -->
+  <section class="py-20 text-center" style={`background: var(--color-dark);`}>
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl sm:text-4xl font-bold mb-4 reveal" style="font-family: var(--font-family-display); color: var(--color-text-on-dark);">
+        {ctaBannerHeading || 'Ready to Get Started'}
+        {ctaBannerAccent && (
+          <span style={`color: var(--color-primary);`}> {ctaBannerAccent}</span>
+        )}
+      </h2>
+      <p class="mb-8 reveal" style="color: var(--color-text-on-dark-muted);">
+        {ctaBannerText || `Contact ${business.name} today for a free consultation.`}
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center reveal">
+        <a href={cta.primary.href} class="btn-primary">{cta.primary.label}</a>
+        <a href={`tel:${contact.phoneRaw}`} class="btn-ghost">{cta.phone.label}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

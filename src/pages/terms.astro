@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { config } from '../config';
+
+const { business, contact } = config;
+---
+
+<BaseLayout
+  title="Terms of Service"
+  description={`Terms of service for ${business.name}.`}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Terms of Service', url: '/terms' }]}
+>
+  <section class="py-16 lg:py-24" style="background: var(--color-bg);">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <h1 class="text-3xl font-bold mb-8" style="font-family: var(--font-family-display);">Terms of Service</h1>
+      <div class="prose prose-lg max-w-none" style="--tw-prose-headings: var(--color-text); --tw-prose-body: var(--color-text-light); --tw-prose-links: var(--color-primary);">
+        <p><strong>Last updated:</strong> {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        <p>Welcome to the {business.name} website. By accessing or using our website, you agree to be bound by these Terms of Service.</p>
+
+        <h2>Use of Website</h2>
+        <p>This website is provided for informational purposes and to facilitate communication between you and {business.name}. You agree to use this website only for lawful purposes.</p>
+
+        <h2>Intellectual Property</h2>
+        <p>All content on this website, including text, images, logos, and designs, is the property of {business.name} and is protected by applicable intellectual property laws.</p>
+
+        <h2>Disclaimer</h2>
+        <p>The information on this website is provided "as is" without warranties of any kind. While we strive to keep information current and accurate, we make no guarantees about the completeness or accuracy of any information on this site.</p>
+
+        <h2>Limitation of Liability</h2>
+        <p>{business.name} shall not be liable for any damages arising from the use or inability to use this website.</p>
+
+        <h2>Contact Us</h2>
+        <p>For questions about these Terms, contact us at <a href={`mailto:${contact.email}`}>{contact.email}</a> or call <a href={`tel:${contact.phoneRaw}`}>{contact.phone}</a>.</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

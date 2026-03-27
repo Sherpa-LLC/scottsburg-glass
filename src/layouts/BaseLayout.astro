@@ -1,0 +1,93 @@
+---
+import SEOHead from '../components/SEOHead.astro';
+import SchemaMarkup from '../components/SchemaMarkup.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonicalUrl?: string;
+  schemaType?: 'home' | 'service' | 'about' | 'contact' | 'blog' | 'blog-post';
+  breadcrumbs?: Array<{ name: string; url: string }>;
+  serviceData?: { name: string; description: string; image?: string };
+  faqs?: Array<{ question: string; answer: string }>;
+  blogPost?: { title: string; description: string; date: string; author: string; image?: string };
+}
+
+const {
+  title,
+  description,
+  image,
+  canonicalUrl,
+  schemaType,
+  breadcrumbs,
+  serviceData,
+  faqs,
+  blogPost,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.png" />
+
+    <SEOHead
+      title={title}
+      description={description}
+      image={image}
+      canonicalUrl={canonicalUrl}
+    />
+    <SchemaMarkup
+      type={schemaType}
+      breadcrumbs={breadcrumbs}
+      serviceData={serviceData}
+      faqs={faqs}
+      blogPost={blogPost}
+    />
+  </head>
+
+  <body class="antialiased" style="font-family: var(--font-family-body); color: var(--color-text); background-color: var(--color-bg);">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-sm"
+      style="background-color: var(--color-primary); color: white;"
+    >
+      Skip to content
+    </a>
+
+    <Header />
+
+    <main id="main-content">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <script>
+      const reveals = document.querySelectorAll('.reveal');
+      if (reveals.length > 0) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
+        );
+        reveals.forEach((el) => observer.observe(el));
+      }
+    </script>
+  </body>
+</html>

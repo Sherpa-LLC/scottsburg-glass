@@ -1,0 +1,146 @@
+---
+import { config } from '../config';
+
+interface Props {
+  type?: 'home' | 'service' | 'about' | 'contact' | 'blog' | 'blog-post';
+  breadcrumbs?: Array<{ name: string; url: string }>;
+  serviceData?: { name: string; description: string; image?: string };
+  faqs?: Array<{ question: string; answer: string }>;
+  blogPost?: { title: string; description: string; date: string; author: string; image?: string };
+}
+
+const { type = 'home', breadcrumbs, serviceData, faqs, blogPost } = Astro.props;
+const c = config;
+
+const allAreas = [...c.serviceAreas.primary, ...c.serviceAreas.secondary];
+
+const localBusiness = {
+  '@context': 'https://schema.org',
+  '@type': c.schema.type,
+  name: c.business.name,
+  description: c.seo.defaultDescription,
+  url: c.seo.siteUrl,
+  telephone: c.contact.phoneRaw,
+  email: c.contact.email,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: c.contact.address.street,
+    addressLocality: c.contact.address.city,
+    addressRegion: c.contact.address.state,
+    postalCode: c.contact.address.zip,
+    addressCountry: c.contact.address.country,
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: c.contact.coordinates.lat,
+    longitude: c.contact.coordinates.lng,
+  },
+  priceRange: c.schema.priceRange,
+  paymentAccepted: c.schema.paymentAccepted.join(', '),
+  image: `${c.seo.siteUrl}/images/logo.svg`,
+  logo: `${c.seo.siteUrl}/images/logo.svg`,
+  sameAs: c.schema.sameAs,
+  ...(c.schema.aggregateRating.count > 0 && {
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: c.schema.aggregateRating.value,
+      reviewCount: c.schema.aggregateRating.count,
+      bestRating: c.schema.aggregateRating.best,
+    },
+  }),
+  areaServed: allAreas.map((area) => ({
+    '@type': 'City',
+    name: `${area}, ${c.contact.address.state}`,
+  })),
+};
+
+const breadcrumbSchema = breadcrumbs
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: breadcrumbs.map((item, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: item.name,
+        item: `${c.seo.siteUrl}${item.url}`,
+      })),
+    }
+  : null;
+
+const serviceSchema = serviceData
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      name: serviceData.name,
+      description: serviceData.description,
+      provider: {
+        '@type': c.schema.type,
+        name: c.business.name,
+      },
+      areaServed: {
+        '@type': 'City',
+        name: `${c.contact.address.city}, ${c.contact.address.state}`,
+      },
+      ...(serviceData.image && {
+        image: `${c.seo.siteUrl}${serviceData.image}`,
+      }),
+    }
+  : null;
+
+const faqSchema =
+  faqs && faqs.length > 0
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: faqs.map((faq) => ({
+          '@type': 'Question',
+          name: faq.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: faq.answer,
+          },
+        })),
+      }
+    : null;
+
+const blogPostSchema = blogPost
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: blogPost.title,
+      description: blogPost.description,
+      datePublished: blogPost.date,
+      author: {
+        '@type': 'Organization',
+        name: blogPost.author,
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: c.business.name,
+        logo: {
+          '@type': 'ImageObject',
+          url: `${c.seo.siteUrl}/images/logo.svg`,
+        },
+      },
+      ...(blogPost.image && {
+        image: blogPost.image.startsWith('http')
+          ? blogPost.image
+          : `${c.seo.siteUrl}${blogPost.image}`,
+      }),
+    }
+  : null;
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(localBusiness)} />
+{breadcrumbSchema && (
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+)}
+{serviceSchema && (
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+)}
+{faqSchema && (
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+)}
+{blogPostSchema && (
+  <script type="application/ld+json" set:html={JSON.stringify(blogPostSchema)} />
+)}

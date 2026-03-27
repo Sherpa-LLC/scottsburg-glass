@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { config } from '../../config';
+import { getCollection, render } from 'astro:content';
+
+const { contact, cta } = config;
+
+export async function getStaticPaths() {
+  const services = await getCollection('services');
+  return services.map((svc) => ({
+    params: { slug: svc.data.slug },
+    props: { service: svc },
+  }));
+}
+
+const { service } = Astro.props;
+const { title, metaTitle, metaDescription, heroImage, heroAlt, shortDescription, faqs } = service.data;
+const { Content } = await render(service);
+---
+
+<BaseLayout
+  title={metaTitle || title}
+  description={metaDescription}
+  schemaType="service"
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'Services', url: '/services' },
+    { name: title, url: `/services/${service.data.slug}` },
+  ]}
+  serviceData={{ name: title, description: shortDescription, image: heroImage }}
+  faqs={faqs}
+>
+  <!-- HERO -->
+  <section class="relative py-28 lg:py-36 overflow-hidden" style={`background: var(--color-secondary);`}>
+    {heroImage && (
+      <div class="absolute inset-0">
+        <img src={heroImage} alt={heroAlt} class="w-full h-full object-cover opacity-20" width="1920" height="1080" fetchpriority="high" />
+      </div>
+    )}
+    <div class="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <nav class="mb-6 text-sm" style="color: var(--color-text-on-dark-muted);">
+        <a href="/" class="hover:text-white transition-colors">Home</a>
+        <span class="mx-2">/</span>
+        <a href="/services" class="hover:text-white transition-colors">Services</a>
+        <span class="mx-2">/</span>
+        <span style="color: var(--color-text-on-dark);">{title}</span>
+      </nav>
+      <h1 class="text-4xl sm:text-5xl font-bold mb-6" style="font-family: var(--font-family-display); color: var(--color-text-on-dark);">
+        {title}
+      </h1>
+      <p class="text-lg max-w-2xl" style="color: var(--color-text-on-dark-muted);">
+        {shortDescription}
+      </p>
+      <div class="mt-8">
+        <a href={cta.primary.href} class="btn-primary">{cta.primary.label}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTENT -->
+  <section class="py-16 lg:py-24" style="background: var(--color-bg);">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <div class="prose prose-lg max-w-none" style="--tw-prose-headings: var(--color-text); --tw-prose-body: var(--color-text-light); --tw-prose-links: var(--color-primary);">
+        <Content />
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQS -->
+  {faqs && faqs.length > 0 && (
+    <section class="py-16 lg:py-24" style="background: var(--color-bg-alt);">
+      <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+        <p class="section-label mb-3">FAQ</p>
+        <h2 class="text-3xl font-bold mb-10" style="font-family: var(--font-family-display);">
+          Common Questions About {title}
+        </h2>
+        <div class="space-y-6">
+          {faqs.map((faq) => (
+            <details class="group p-6 rounded-lg" style="background: var(--color-surface); box-shadow: var(--shadow-card);">
+              <summary class="cursor-pointer font-bold text-lg flex items-center justify-between">
+                {faq.question}
+                <span class="ml-4 text-2xl group-open:rotate-45 transition-transform" style="color: var(--color-primary);">+</span>
+              </summary>
+              <p class="mt-4 text-sm leading-relaxed" style="color: var(--color-text-muted);">{faq.answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- CTA -->
+  <section class="py-16 text-center" style={`background: var(--color-dark);`}>
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold mb-4" style="font-family: var(--font-family-display); color: var(--color-text-on-dark);">
+        Ready to Get Started?
+      </h2>
+      <p class="mb-8" style="color: var(--color-text-on-dark-muted);">
+        Contact us today for a free consultation about {title.toLowerCase()}.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={cta.primary.href} class="btn-primary">{cta.primary.label}</a>
+        <a href={`tel:${contact.phoneRaw}`} class="btn-ghost">{cta.phone.label}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

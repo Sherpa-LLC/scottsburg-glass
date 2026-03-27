@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { config } from '../../config';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog');
+const posts = allPosts
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+---
+
+<BaseLayout
+  title="Blog"
+  description={`Tips, guides, and insights from ${config.business.name}.`}
+  schemaType="blog"
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Blog', url: '/blog' }]}
+>
+  <!-- HERO -->
+  <section class="py-20 lg:py-28" style={`background: var(--color-secondary);`}>
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+      <p class="section-label mb-4">Blog</p>
+      <h1 class="text-4xl sm:text-5xl font-bold mb-6" style="font-family: var(--font-family-display); color: var(--color-text-on-dark);">
+        Tips & Insights
+      </h1>
+      <p class="text-lg" style="color: var(--color-text-on-dark-muted);">
+        Expert advice and local knowledge from the {config.business.name} team.
+      </p>
+    </div>
+  </section>
+
+  <!-- POSTS GRID -->
+  <section class="py-16 lg:py-24" style="background: var(--color-bg);">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      {posts.length === 0 ? (
+        <p class="text-center text-lg" style="color: var(--color-text-muted);">
+          Check back soon for new posts!
+        </p>
+      ) : (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {posts.map((post, i) => {
+            const formattedDate = new Date(post.data.date).toLocaleDateString('en-US', {
+              year: 'numeric', month: 'long', day: 'numeric',
+            });
+            return (
+              <a
+                href={`/blog/${post.id}`}
+                class="group rounded-lg overflow-hidden transition-shadow duration-300 reveal"
+                style={`background: var(--color-surface); box-shadow: var(--shadow-card); transition-delay: ${i * 100}ms;`}
+              >
+                {post.data.heroImage && (
+                  <div class="aspect-[16/10] overflow-hidden">
+                    <img
+                      src={post.data.heroImage}
+                      alt={post.data.heroAlt || post.data.title}
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      width="600"
+                      height="375"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
+                <div class="p-6">
+                  {post.data.category && (
+                    <span class="inline-block px-2 py-1 text-xs font-semibold rounded mb-3" style="background: var(--color-primary); color: white;">
+                      {post.data.category}
+                    </span>
+                  )}
+                  <h2 class="text-lg font-bold mb-2 group-hover:text-[var(--color-primary)] transition-colors" style="font-family: var(--font-family-display);">
+                    {post.data.title}
+                  </h2>
+                  <p class="text-sm mb-4" style="color: var(--color-text-muted);">{post.data.metaDescription}</p>
+                  <div class="flex items-center gap-3 text-xs" style="color: var(--color-text-muted);">
+                    <span>{formattedDate}</span>
+                    {post.data.readingTime && (
+                      <>
+                        <span>&middot;</span>
+                        <span>{post.data.readingTime}</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </a>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,47 @@
+---
+import { config } from '../config';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonicalUrl?: string;
+}
+
+const {
+  title,
+  description = config.seo.defaultDescription,
+  image = config.seo.defaultImage,
+  canonicalUrl,
+} = Astro.props;
+
+const pageTitle = title
+  ? config.seo.titleTemplate.replace('%s', title)
+  : config.seo.defaultTitle;
+
+const canonical = canonicalUrl || new URL(Astro.url.pathname, config.seo.siteUrl).href;
+const ogImage = image.startsWith('http') ? image : new URL(image, config.seo.siteUrl).href;
+---
+
+<title>{pageTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:url" content={canonical} />
+<meta property="og:site_name" content={config.business.name} />
+<meta property="og:locale" content="en_US" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<!-- Geo -->
+<meta name="geo.region" content={`US-${config.contact.address.state}`} />
+<meta name="geo.placename" content={config.contact.address.city} />

@@ -1,0 +1,180 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { config } from '../../config';
+import { getCollection } from 'astro:content';
+
+const { business, contact, cta } = config;
+const allAreas = [...config.serviceAreas.primary, ...config.serviceAreas.secondary];
+
+const allServices = await getCollection('services');
+const services = allServices.sort((a, b) => a.data.order - b.data.order);
+
+function slugify(str: string): string {
+  return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+export async function getStaticPaths() {
+  const { config: c } = await import('../../config');
+  const areas = [...c.serviceAreas.primary, ...c.serviceAreas.secondary];
+  return areas.map((area) => ({
+    params: { slug: area.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') },
+    props: { area },
+  }));
+}
+
+const { area } = Astro.props;
+const areaSlug = slugify(area);
+const isPrimary = config.serviceAreas.primary.includes(area);
+---
+
+<BaseLayout
+  title={`${business.name} in ${area}, ${contact.address.state}`}
+  description={`${business.name} proudly serves ${area}, ${contact.address.state}. ${business.description} Contact us today for a free estimate.`}
+  schemaType="service"
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'Locations', url: '/locations' },
+    { name: area, url: `/locations/${areaSlug}` },
+  ]}
+>
+  <!-- HERO -->
+  <section class="relative py-28 lg:py-36 overflow-hidden" style={`background: var(--color-secondary);`}>
+    <div class="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+      <p class="section-label mb-4">Serving {area}</p>
+      <h1 class="text-4xl sm:text-5xl font-bold mb-6" style="font-family: var(--font-family-display); color: var(--color-text-on-dark);">
+        {business.name} in {area}, {contact.address.state}
+      </h1>
+      <p class="text-lg max-w-2xl mx-auto mb-8" style="color: var(--color-text-on-dark-muted);">
+        Trusted {business.tagline.toLowerCase()} serving {area} and the surrounding {contact.address.state} communities. Locally owned, fully licensed, and committed to quality.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={cta.primary.href} class="btn-primary">{cta.primary.label}</a>
+        <a href={`tel:${contact.phoneRaw}`} class="btn-ghost">{cta.phone.label}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTRO -->
+  <section class="py-16 lg:py-24" style="background: var(--color-bg);">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <div class="prose prose-lg max-w-none" style="--tw-prose-headings: var(--color-text); --tw-prose-body: var(--color-text-light); --tw-prose-links: var(--color-primary);">
+        <h2>Your Local {business.name} Team in {area}</h2>
+        <p>
+          {area} residents and business owners trust {business.name} for reliable, professional service.
+          {isPrimary
+            ? `As one of our primary service areas, ${area} receives priority scheduling and fast response times.`
+            : `We proudly extend our full range of services to ${area} and the surrounding communities.`
+          }
+        </p>
+        <p>
+          Whether you need routine service or a major project, our experienced team brings the same
+          dedication and quality workmanship to every job in {area}. We're fully licensed, insured,
+          and committed to your complete satisfaction.
+        </p>
+        <p>
+          Call us at <a href={`tel:${contact.phoneRaw}`}>{contact.phone}</a> or
+          <a href="/contact">request a free estimate</a> to get started.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES IN THIS AREA -->
+  <section class="py-16 lg:py-24" style="background: var(--color-bg-alt);">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <p class="section-label mb-3 reveal">Our Services</p>
+      <h2 class="text-3xl sm:text-4xl font-bold mb-4 reveal" style="font-family: var(--font-family-display);">
+        Services Available in {area}
+      </h2>
+      <p class="text-lg mb-12 max-w-2xl reveal" style="color: var(--color-text-muted);">
+        We offer our full range of services to {area} homeowners and businesses.
+      </p>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {services.map((svc, i) => (
+          <a
+            href={`/services/${svc.data.slug}`}
+            class="group p-6 rounded-lg transition-all duration-300 reveal"
+            style={`background: var(--color-surface); box-shadow: var(--shadow-card); transition-delay: ${i * 100}ms;`}
+          >
+            <h3 class="text-xl font-bold mb-2 group-hover:text-[var(--color-primary)] transition-colors" style="font-family: var(--font-family-display);">
+              {svc.data.title}
+            </h3>
+            <p class="text-sm mb-4" style="color: var(--color-text-muted);">{svc.data.shortDescription}</p>
+            <span class="text-sm font-semibold" style="color: var(--color-primary);">
+              Learn More &rarr;
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE US FOR THIS AREA -->
+  <section class="py-16 lg:py-24" style="background: var(--color-bg);">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold mb-8 reveal" style="font-family: var(--font-family-display);">
+        Why {area} Chooses {business.name}
+      </h2>
+      <div class="space-y-6 reveal">
+        <div class="flex gap-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background: var(--color-primary);">1</div>
+          <div>
+            <h3 class="font-bold text-lg mb-1">Local Knowledge</h3>
+            <p class="text-sm" style="color: var(--color-text-muted);">We know {area} and {contact.address.state} inside and out — local regulations, climate considerations, and what works best in this area.</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background: var(--color-primary);">2</div>
+          <div>
+            <h3 class="font-bold text-lg mb-1">Fast Response Times</h3>
+            <p class="text-sm" style="color: var(--color-text-muted);">Based nearby, we can reach {area} quickly. {isPrimary ? 'As a primary service area, you get priority scheduling.' : 'We serve your area regularly and can accommodate your schedule.'}</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <div class="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background: var(--color-primary);">3</div>
+          <div>
+            <h3 class="font-bold text-lg mb-1">Trusted by Your Neighbors</h3>
+            <p class="text-sm" style="color: var(--color-text-muted);">We've built our reputation one job at a time across {contact.address.state}. Ask around — chances are someone in {area} has worked with us.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OTHER LOCATIONS -->
+  <section class="py-16 lg:py-24" style="background: var(--color-bg-alt);">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+      <p class="section-label mb-3">Service Areas</p>
+      <h2 class="text-2xl font-bold mb-8" style="font-family: var(--font-family-display);">
+        We Also Serve
+      </h2>
+      <div class="flex flex-wrap justify-center gap-3">
+        {allAreas.filter(a => a !== area).map((a) => (
+          <a
+            href={`/locations/${slugify(a)}`}
+            class="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200"
+            style="background: var(--color-surface); border: 1px solid var(--color-border); color: var(--color-text-light);"
+          >
+            {a}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 text-center" style={`background: var(--color-dark);`}>
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold mb-4" style="font-family: var(--font-family-display); color: var(--color-text-on-dark);">
+        Ready for Service in {area}?
+      </h2>
+      <p class="mb-8" style="color: var(--color-text-on-dark-muted);">
+        Get in touch today for a free consultation. We're here to help.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={cta.primary.href} class="btn-primary">{cta.primary.label}</a>
+        <a href={`tel:${contact.phoneRaw}`} class="btn-ghost">{cta.phone.label}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

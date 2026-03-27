@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { config } from '../../config';
+
+const { business, contact, cta } = config;
+
+function slugify(str: string): string {
+  return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+---
+
+<BaseLayout
+  title="Service Areas"
+  description={`${business.name} proudly serves ${config.serviceAreas.primary.join(', ')} and surrounding ${contact.address.state} communities.`}
+  breadcrumbs={[{ name: 'Home', url: '/' }, { name: 'Locations', url: '/locations' }]}
+>
+  <!-- HERO -->
+  <section class="py-20 lg:py-28" style={`background: var(--color-secondary);`}>
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
+      <p class="section-label mb-4">Service Areas</p>
+      <h1 class="text-4xl sm:text-5xl font-bold mb-6" style="font-family: var(--font-family-display); color: var(--color-text-on-dark);">
+        Areas We Serve
+      </h1>
+      <p class="text-lg" style="color: var(--color-text-on-dark-muted);">
+        {business.name} proudly serves {contact.address.city} and the surrounding {contact.address.state} communities.
+      </p>
+    </div>
+  </section>
+
+  <!-- PRIMARY AREAS -->
+  <section class="py-16 lg:py-24" style="background: var(--color-bg);">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+      <p class="section-label mb-3">Primary Service Areas</p>
+      <h2 class="text-3xl font-bold mb-8" style="font-family: var(--font-family-display);">
+        Our Home Turf
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {config.serviceAreas.primary.map((area) => (
+          <a
+            href={`/locations/${slugify(area)}`}
+            class="group p-6 rounded-lg transition-all duration-200"
+            style="background: var(--color-surface); box-shadow: var(--shadow-card);"
+          >
+            <h3 class="text-lg font-bold group-hover:text-[var(--color-primary)] transition-colors">
+              {area}, {contact.address.state}
+            </h3>
+            <p class="text-sm mt-1" style="color: var(--color-text-muted);">
+              Priority scheduling &middot; Fast response
+            </p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- SECONDARY AREAS -->
+  {config.serviceAreas.secondary.length > 0 && (
+    <section class="py-16 lg:py-24" style="background: var(--color-bg-alt);">
+      <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <p class="section-label mb-3">Extended Service Areas</p>
+        <h2 class="text-3xl font-bold mb-8" style="font-family: var(--font-family-display);">
+          We Also Serve
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {config.serviceAreas.secondary.map((area) => (
+            <a
+              href={`/locations/${slugify(area)}`}
+              class="group p-6 rounded-lg transition-all duration-200"
+              style="background: var(--color-surface); box-shadow: var(--shadow-card);"
+            >
+              <h3 class="text-lg font-bold group-hover:text-[var(--color-primary)] transition-colors">
+                {area}, {contact.address.state}
+              </h3>
+              <p class="text-sm mt-1" style="color: var(--color-text-muted);">
+                Full service available
+              </p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- CTA -->
+  <section class="py-16 text-center" style={`background: var(--color-dark);`}>
+    <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold mb-4" style="font-family: var(--font-family-display); color: var(--color-text-on-dark);">
+        Don't See Your Area?
+      </h2>
+      <p class="mb-8" style="color: var(--color-text-on-dark-muted);">
+        Give us a call — we may still be able to help. We're always expanding our coverage.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={cta.primary.href} class="btn-primary">{cta.primary.label}</a>
+        <a href={`tel:${contact.phoneRaw}`} class="btn-ghost">{cta.phone.label}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
