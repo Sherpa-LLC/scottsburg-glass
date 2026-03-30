@@ -89,12 +89,8 @@ const { business, contact, hours } = config;
                 ></textarea>
               </div>
 
-              <!-- Turnstile placeholder -->
-              <div id="turnstile-widget" class="min-h-[65px] flex items-center">
-                <noscript>
-                  <p class="text-sm" style="color: var(--color-text-muted);">Please enable JavaScript for form verification.</p>
-                </noscript>
-              </div>
+              <!-- Cloudflare Turnstile -->
+              <div class="cf-turnstile" data-sitekey="0x4AAAAAAAe0EJ2NwHkMsJro" data-theme="light"></div>
 
               <button type="submit" class="btn-primary w-full sm:w-auto">Send Message</button>
             </form>
@@ -169,3 +165,5 @@ const { business, contact, hours } = config;
     </div>
   </section>
 </BaseLayout>
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
